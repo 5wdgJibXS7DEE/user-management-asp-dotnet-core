@@ -1,0 +1,43 @@
+@using UserManagement.Models
+
+@model IEnumerable<User>
+
+@{
+    // todo GSA replace Name with DisplayForName
+    // todo GSA replace user by view models
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Users</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Age
+            </th>
+            <th>
+                Gender
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var user in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(e => user.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(e => user.Age)
+            </td>
+            <td>
+                @Html.DisplayFor(e => user.Gender)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
