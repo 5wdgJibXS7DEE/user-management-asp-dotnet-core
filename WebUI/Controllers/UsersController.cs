@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using UserManagement.Models;
+using UserManagement.Data;
+using UserManagement.WebUI.ViewModels;
 
 namespace UserManagement.WebUI.Controllers
 {
@@ -16,11 +13,11 @@ namespace UserManagement.WebUI.Controllers
 
         public IActionResult Index()
         {
-            var users = new List<User>();
-            users.Add(new User() { Name = "John", Age = 18, Gender = Gender.Male });
-            users.Add(new User() { Name = "Kate", Age = 21, Gender = Gender.Female });
+            UsersRepository.AddRandomUser();
 
-            return View(users);
+            var vms = UsersRepository.Users.Select(u => new UserVm().From(u));
+
+            return View(vms);
         }
     }
 }
