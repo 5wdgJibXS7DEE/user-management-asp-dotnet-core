@@ -9,19 +9,15 @@ namespace UserManagement.Data
 {
     public class UsersRepository
     {
-        public static ICollection<User> Users { get; private set; }
+        public static ICollection<User> Users { get; private set; } = new Collection<User>();
 
         public static readonly string Filepath = "users.json";
 
-        public static void Import()
+        public static void Load()
         {
             string json = ReadJsonFromFile(Filepath);
 
-            if (json == null)
-            {
-                Users = new Collection<User>();
-            }
-            else
+            if (json != null)
             {
                 Users = JsonSerializer.Deserialize<ICollection<User>>(json);
             }
@@ -43,7 +39,7 @@ namespace UserManagement.Data
             }
         }
 
-        private static void Export()
+        public static void Save()
         {
             var options = new JsonSerializerOptions();
             options.WriteIndented = true;
@@ -62,22 +58,44 @@ namespace UserManagement.Data
             }
         }
 
-        public static void AddRandomUser()
+        public static void CreateRandom()
         {
-            var random = new Random();
+            Random random = new Random();
+            Gender gender = (Gender) random.Next(0, 2); // todo GSA max value of enum Gender must be computed at runtime
 
-            var user = new User()
+            User user = new User()
             {
                 InternalId = Guid.NewGuid(),
                 ExternalId = Guid.NewGuid(),
                 Age = random.Next(1, 100),
-                Name = "Randomly generated",
-                Gender = Enum.Parse<Gender>(random.Next(0, 2).ToString())
+                Name = GenerateRandomName(gender, random),
+                Gender = gender
             };
 
             Users.Add(user);
+        }
 
-            Export();
+        private static string GenerateRandomName(Gender gender, Random random)
+        {
+            string[] males = new string[] { "Wei", "Adrien", "Mathieu", "Morgan", "Marco", "Yahia", "Cédric", "Fabrice", "Nathan", "Hackett" };
+            string[] females = new string[] { "Jayanti", "Raja", "Diane", "Caitlin", "Amélie", "Priya", "Sara", "Leia" };
+            string name = null;
+
+            switch (gender)
+            {
+                case Gender.Male:
+                    name = males[random.Next(0, males.Length - 1)];
+                    break;
+
+                case Gender.Female:
+                    name = females[random.Next(0, females.Length - 1)];
+                    break;
+
+                default:
+                    throw new NotSupportedException(gender + " not a correct value for " + nameof(Gender));
+            }
+
+            return name;
         }
     }
 }
