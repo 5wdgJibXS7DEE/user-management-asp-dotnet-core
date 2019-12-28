@@ -13,7 +13,7 @@ namespace UserManagement.WebUI.Controllers
 
         public IActionResult Index()
         {
-            var vms = UsersRepository.Users.Select(u => new UserVm().From(u));
+            var vms = UsersRepository.All().Select(u => new UserVm().From(u));
 
             return View(vms);
         }

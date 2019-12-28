@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -9,33 +8,37 @@ namespace UserManagement.Data
 {
     public class UsersRepository
     {
-        public static ICollection<User> Users { get; private set; } = new Collection<User>();
+        private static List<User> Users = new List<User>();
 
         public static readonly string Filepath = "users.json";
+
+        private static readonly object FileLocker = new object();
+
+        public static User[] All()
+        {
+            lock(Users)
+                return Users.ToArray();
+        }
 
         public static void Load()
         {
             string json = ReadJsonFromFile(Filepath);
 
-            if (json != null)
-            {
-                Users = JsonSerializer.Deserialize<ICollection<User>>(json);
-            }
+            var users = new List<User>(JsonSerializer.Deserialize<IEnumerable<User>>(json));
+
+            lock(Users)
+                Users = users;
         }
 
         private static string ReadJsonFromFile(string jsonPath)
         {
-            try
+            lock(FileLocker)
             {
                 using (FileStream fs = File.OpenRead(jsonPath))
                 using (TextReader reader = new StreamReader(fs))
                 {
                     return reader.ReadToEnd();
                 }
-            }
-            catch (FileNotFoundException)
-            {
-                return null;
             }
         }
 
@@ -44,17 +47,23 @@ namespace UserManagement.Data
             var options = new JsonSerializerOptions();
             options.WriteIndented = true;
 
-            string json = JsonSerializer.Serialize(Users, options);
+            string serialized = "";
 
-            WriteJsonInFile(json, Filepath);
+            lock(Users)
+                serialized = JsonSerializer.Serialize(Users, options);
+
+            WriteInFile(serialized, Filepath);
         }
 
-        private static void WriteJsonInFile(string json, string filepath)
+        private static void WriteInFile(string content, string filepath)
         {
-            using (FileStream fs = File.Create(filepath))
-            using (TextWriter writer = new StreamWriter(fs))
+            lock(FileLocker)
             {
-                writer.Write(json);
+                using (FileStream fs = File.Create(filepath))
+                using (TextWriter writer = new StreamWriter(fs))
+                {
+                    writer.Write(content);
+                }
             }
         }
 
@@ -72,7 +81,8 @@ namespace UserManagement.Data
                 Gender = gender
             };
 
-            Users.Add(user);
+            lock(Users)
+                Users.Add(user);
         }
 
         private static string GenerateRandomName(Gender gender, Random random)
