@@ -4,39 +4,33 @@
 
 @{
     // todo GSA replace Name with DisplayForName
-    // todo GSA replace user by view models
     ViewData["Title"] = "Users";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Users</h1>
+<h1>Data management</h1>
+
+<p><a href="@Url.Action("CreateRandom", "Users")">Create</a> a randomly generated user.</p>
+<p><a href="@Url.Action("Load", "Users")">Load</a> the last save of users.</p>
+<p><a href="@Url.Action("Save", "Users")">Save</a> users.</p>
+
+<h1>List of users</h1>
 
 <table>
     <thead>
         <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Age
-            </th>
-            <th>
-                Gender
-            </th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var user in Model) {
+@foreach (var user in Model)
+{
         <tr>
-            <td>
-                @Html.DisplayFor(e => user.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(e => user.Age)
-            </td>
-            <td>
-                @Html.DisplayFor(e => user.Gender)
-            </td>
+            <td>@Html.DisplayFor(e => user.Name)</td>
+            <td>@Html.DisplayFor(e => user.Age)</td>
+            <td>@Html.DisplayFor(e => user.Gender)</td>
         </tr>
 }
     </tbody>

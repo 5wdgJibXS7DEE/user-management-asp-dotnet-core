@@ -14,8 +14,6 @@ namespace UserManagement.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-
-            Data.UsersRepository.Import();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
