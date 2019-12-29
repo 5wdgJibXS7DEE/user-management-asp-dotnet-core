@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using UserManagement.Data;
+using UserManagement.Models;
 using UserManagement.WebUI.ViewModels;
 
 namespace UserManagement.WebUI.Controllers
@@ -11,11 +13,13 @@ namespace UserManagement.WebUI.Controllers
         {
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string name, int? page)
         {
-            var vms = UsersRepository.All().Select(u => new UserVm().From(u));
+            IEnumerable<User> users = UsersRepository.FindByName(name);
 
-            return View(vms);
+            var vm = new UsersVm(users, name, page);
+
+            return View(vm);
         }
 
         public IActionResult CreateRandom()

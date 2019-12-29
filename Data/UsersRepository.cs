@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text.Json;
 using UserManagement.Models;
+using System.Linq;
 
 namespace UserManagement.Data
 {
@@ -14,10 +15,19 @@ namespace UserManagement.Data
 
         private static readonly object FileLocker = new object();
 
-        public static User[] All()
+        public static IEnumerable<User> All()
         {
             lock(Users)
                 return Users.ToArray();
+        }
+
+        public static IEnumerable<User> FindByName(string name)
+        {
+            string nameFilter = name != null
+                ? name.Trim().ToLowerInvariant()
+                : "";
+
+            return All().Where(m => m.Name.ToLowerInvariant().Contains(nameFilter));
         }
 
         public static void Load()

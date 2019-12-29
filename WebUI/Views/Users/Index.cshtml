@@ -1,9 +1,11 @@
 @using UserManagement.WebUI.ViewModels
 
-@model IEnumerable<UserVm>
+@model UsersVm
 
 @{
-    // todo GSA replace Name with DisplayForName
+    // todo GSA hardcoded text in <th> could be compiled
+    // todo GSA name="name" in input button could be compiled
+
     ViewData["Title"] = "Users";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -11,10 +13,15 @@
 <h1>Data management</h1>
 
 <p><a href="@Url.Action("CreateRandom", "Users")">Create</a> a randomly generated user.</p>
-<p><a href="@Url.Action("Load", "Users")">Load</a> the last save of users.</p>
-<p><a href="@Url.Action("Save", "Users")">Save</a> users.</p>
+<p><a href="@Url.Action("Load", "Users")">Load</a> the list of users from the last time it was saved.</p>
+<p><a href="@Url.Action("Save", "Users")">Save</a> the list of users for later.</p>
 
 <h1>List of users</h1>
+
+<form action="@Url.Action("Index", "Users")">
+  <input type="text" placeholder="Name of user" name="name" value="@Model.Name">
+  <button type="submit">Search</button>
+</form>
 
 <table>
     <thead>
@@ -25,7 +32,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var user in Model)
+@foreach (var user in Model.Users)
 {
         <tr>
             <td>@Html.DisplayFor(e => user.Name)</td>
@@ -35,3 +42,17 @@
 }
     </tbody>
 </table>
+
+<p>
+@foreach (var paginate in Model.Pagination.Pages)
+{
+    @if(paginate.IsClickable)
+    {
+        <a href="@Url.Action("Index", "Users", paginate.UrlParameters)">@paginate.LinkText</a> 
+    }
+    else
+    {
+        <span>@paginate.LinkText</span>
+    }
+}
+</p>

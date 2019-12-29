@@ -5,22 +5,20 @@ namespace UserManagement.WebUI.ViewModels
 {
     public class UserVm
     {
-        public Guid? ExternalId { get; set; }
+        public Guid? ExternalId;
 
-        public string Name { get; set; }
+        public string Name;
 
-        public int Age { get; set; }
+        public int Age;
 
-        public Gender Gender { get; set; }
+        public Gender Gender;
 
-        public UserVm From(User model)
+        public UserVm(User model)
         {
             ExternalId = model.ExternalId;
             Name = model.Name;
             Age = model.Age;
             Gender = model.Gender;
-
-            return this;
         }
     }
 }
