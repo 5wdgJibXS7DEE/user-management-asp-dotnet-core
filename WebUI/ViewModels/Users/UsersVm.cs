@@ -7,9 +7,9 @@ namespace UserManagement.WebUI.ViewModels
 {
     public class UsersVm
     {
-        public IEnumerable<UserVm> Users;
+        public string SearchName;
 
-        public string Name;
+        public IEnumerable<UserVm> Users;
 
         public PaginationVm Pagination;
 
@@ -17,22 +17,15 @@ namespace UserManagement.WebUI.ViewModels
 
         public UsersVm(in IEnumerable<User> models, string name, int? page)
         {
-            Name = name;
+            SearchName = name;
 
-            int elements = models.Count();
-
-            int pageFilter = page ?? 1;
-
-            int take = PerPage * pageFilter <= models.Count()
-                ? PerPage
-                : models.Count() % PerPage;
+            int selectedPage = page ?? 1;
+            Pagination = new PaginationVm(models.Count(), PerPage, selectedPage, nameof(name), name);
 
             Users = models
-                .Skip((pageFilter - 1) * PerPage)
-                .Take(take)
+                .Skip(Pagination.Skip)
+                .Take(Pagination.Take)
                 .Select(model => new UserVm(model));
-
-            Pagination = new PaginationVm(elements, PerPage, pageFilter, nameof(name), name);
         }
     }
 }
