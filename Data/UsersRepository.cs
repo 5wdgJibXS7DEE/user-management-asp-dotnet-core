@@ -27,7 +27,9 @@ namespace UserManagement.Data
                 ? name.Trim().ToLowerInvariant()
                 : "";
 
-            return All().Where(m => m.Name.ToLowerInvariant().Contains(nameFilter));
+            return All()
+                .Where(m => m.Name.ToLowerInvariant().Contains(nameFilter))
+                .ToArray();
         }
 
         public static void Load()
