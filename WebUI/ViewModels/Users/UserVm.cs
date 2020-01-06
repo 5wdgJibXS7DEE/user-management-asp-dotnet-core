@@ -5,7 +5,7 @@ namespace UserManagement.WebUI.ViewModels
 {
     public class UserVm
     {
-        public Guid? ExternalId;
+        public Guid? Id;
 
         public string Name;
 
@@ -15,7 +15,7 @@ namespace UserManagement.WebUI.ViewModels
 
         public UserVm(User model)
         {
-            ExternalId = model.ExternalId;
+            Id = model.ExternalId;
             Name = model.Name;
             Age = model.Age;
             Gender = model.Gender;

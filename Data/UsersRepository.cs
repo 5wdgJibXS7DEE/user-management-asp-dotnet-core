@@ -21,6 +21,12 @@ namespace UserManagement.Data
                 return Users.ToArray();
         }
 
+        public static User SingleByExternalId(Guid externalId)
+        {
+            return All()
+                .Single(m => m.ExternalId == externalId);
+        }
+
         public static IEnumerable<User> FindByName(string name)
         {
             string nameFilter = name != null

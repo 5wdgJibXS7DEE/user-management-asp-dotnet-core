@@ -1,0 +1,18 @@
+@using UserManagement.WebUI.ViewModels
+
+@model UserVm
+
+@{
+    ViewData["Title"] = "User edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Navigation</h1>
+
+<p><a href="@Url.Action("Index", "Users")">Back</a> to the list of users.</p>
+
+<h1>User information</h1>
+
+<p>Name: @Model.Name</p>
+<p>Age: @Model.Age</p>
+<p>Gender: @Model.Gender</p>

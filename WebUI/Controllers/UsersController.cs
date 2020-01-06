@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using UserManagement.Data;
 using UserManagement.Models;
@@ -18,6 +18,15 @@ namespace UserManagement.WebUI.Controllers
             IEnumerable<User> users = UsersRepository.FindByName(name);
 
             var vm = new UsersVm(users, name, page);
+
+            return View(vm);
+        }
+
+        public IActionResult Display(Guid id)
+        {
+            User user = UsersRepository.SingleByExternalId(id);
+
+            var vm = new UserVm(user);
 
             return View(vm);
         }
