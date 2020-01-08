@@ -38,6 +38,27 @@ namespace UserManagement.Data
                 .ToArray();
         }
 
+        public static bool TryUpdate(User updated)
+        {
+            lock(Users)
+            {
+                IEnumerable<User> match = Users.Where(u => u.ExternalId == updated.ExternalId);
+                
+                if (match.Count() != 1)
+                    return false;
+
+                User old = match.Single();
+
+                updated.InternalId = old.InternalId;
+
+                Users.Remove(old);
+
+                Users.Add(updated);
+            }
+            
+            return true;
+        }
+
         public static void Load()
         {
             string json = ReadJsonFromFile(Filepath);

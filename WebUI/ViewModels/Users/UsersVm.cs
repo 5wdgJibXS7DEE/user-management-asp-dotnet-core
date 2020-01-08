@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UserManagement.Models;
 
-namespace UserManagement.WebUI.ViewModels
+namespace UserManagement.WebUI.ViewModels.Users
 {
     public class UsersVm
     {

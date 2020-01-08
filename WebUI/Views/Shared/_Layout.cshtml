@@ -8,7 +8,8 @@
 <body>
     <div class="container">
         <main role="main">
-            <span>@TempData["Success"]</span>
+            <span class="success">@TempData["Success"]</span>
+            <span class="error">@TempData["Error"]</span>
 
             @RenderBody()
         </main>

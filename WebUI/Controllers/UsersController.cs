@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using UserManagement.Data;
 using UserManagement.Models;
-using UserManagement.WebUI.ViewModels;
+using UserManagement.WebUI.ViewModels.Users;
 
 namespace UserManagement.WebUI.Controllers
 {
@@ -29,6 +29,20 @@ namespace UserManagement.WebUI.Controllers
             var vm = new UserVm(user);
 
             return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(UserVm input)
+        {
+            if (ModelState.IsValid == false)
+                return View(nameof(Display), input);
+            
+            if (UsersRepository.TryUpdate(input.ToModel()))
+                TempData["Success"] = "The changes were saved.";
+            else
+                TempData["Error"] = "An error occured and the changes were NOT saved.";
+
+            return RedirectToAction(nameof(Display), new { Id = input.Id });
         }
 
         public IActionResult CreateRandom()
