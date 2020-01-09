@@ -22,27 +22,46 @@ namespace UserManagement.WebUI.Controllers
             return View(vm);
         }
 
-        public IActionResult Display(Guid id)
+        [HttpGet]
+        public IActionResult Edit(Guid id)
         {
             User user = UsersRepository.SingleByExternalId(id);
 
-            var vm = new UserVm(user);
+            var vm = new EditVm(user);
 
             return View(vm);
         }
 
         [HttpPost]
-        public IActionResult Edit(UserVm input)
+        public IActionResult Edit(EditVm input)
         {
             if (ModelState.IsValid == false)
-                return View(nameof(Display), input);
+                return View(nameof(Edit), input);
             
             if (UsersRepository.TryUpdate(input.ToModel()))
                 TempData["Success"] = "The changes were saved.";
             else
                 TempData["Error"] = "An error occured and the changes were NOT saved.";
 
-            return RedirectToAction(nameof(Display), new { Id = input.Id });
+            return RedirectToAction(nameof(Edit), new { Id = input.Id });
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View(new CreateVm());
+        }
+
+        [HttpPost]
+        public IActionResult Create(CreateVm input)
+        {
+            if (ModelState.IsValid == false)
+                return View(nameof(Create), input);
+            
+            Guid createdId = UsersRepository.Create(input.ToModel());
+            TempData["Success"] = "The user was created.";
+
+            return RedirectToAction(nameof(Edit), new { Id = createdId });
         }
 
         public IActionResult CreateRandom()

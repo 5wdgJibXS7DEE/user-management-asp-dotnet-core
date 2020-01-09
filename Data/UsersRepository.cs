@@ -38,6 +38,17 @@ namespace UserManagement.Data
                 .ToArray();
         }
 
+        public static Guid Create(User created)
+        {
+            created.InternalId = Guid.NewGuid();
+            created.ExternalId = Guid.NewGuid();
+            
+            lock(Users)
+                Users.Add(created);
+            
+            return created.ExternalId.Value;
+        }
+
         public static bool TryUpdate(User updated)
         {
             lock(Users)

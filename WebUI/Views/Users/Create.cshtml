@@ -1,10 +1,10 @@
 @using UserManagement.WebUI.ViewModels.Users
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
-@model UserVm
+@model CreateVm
 
 @{
-    ViewData["Title"] = "User edit";
+    ViewData["Title"] = "User creation";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -14,8 +14,7 @@
 
 <h1>User information</h1>
 
-<form asp-action="Edit">
-    <input asp-for="Id" />
+<form asp-action="Create">
     <div>
         <label asp-for="Name"></label>
         <input asp-for="Name" />
@@ -31,5 +30,5 @@
         <input asp-for="Gender" />
         <span asp-validation-for="Gender"></span>
     </div>
-    <button type="submit">Save</button>
+    <button type="submit">Create</button>
 </form>

@@ -5,7 +5,7 @@ using UserManagement.Models;
 
 namespace UserManagement.WebUI.ViewModels.Users
 {
-    public class UserVm
+    public class EditVm
     {
         [Required]
         [HiddenInput]
@@ -22,9 +22,9 @@ namespace UserManagement.WebUI.ViewModels.Users
         [Required]
         public Gender Gender { get; set; }
 
-        public UserVm() { }
+        public EditVm() { }
 
-        public UserVm(User model)
+        public EditVm(User model)
         {
             Id = model.ExternalId.Value;
             Name = model.Name;
@@ -34,14 +34,13 @@ namespace UserManagement.WebUI.ViewModels.Users
 
         public User ToModel()
         {
-            var model = new User();
-
-            model.ExternalId = Id;
-            model.Name = Name;
-            model.Age = Age;
-            model.Gender = Gender;
-
-            return model;
+            return new User()
+            {
+                ExternalId = Id,
+                Name = Name,
+                Age = Age,
+                Gender = Gender
+            };
         }
     }
 }

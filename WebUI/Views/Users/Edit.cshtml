@@ -1,0 +1,35 @@
+@using UserManagement.WebUI.ViewModels.Users
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model EditVm
+
+@{
+    ViewData["Title"] = "User edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Navigation</h1>
+
+<p><a href="@Url.Action("Index", "Users")">Back</a> to the list of users.</p>
+
+<h1>User information</h1>
+
+<form asp-action="Edit">
+    <input asp-for="Id" />
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div>
+        <label asp-for="Age"></label>
+        <input asp-for="Age" />
+        <span asp-validation-for="Age"></span>
+    </div>
+    <div>
+        <label asp-for="Gender"></label>
+        <input asp-for="Gender" />
+        <span asp-validation-for="Gender"></span>
+    </div>
+    <button type="submit">Save</button>
+</form>

@@ -8,7 +8,7 @@ namespace UserManagement.WebUI.ViewModels.Users
     {
         public string SearchName;
 
-        public IEnumerable<UserVm> Users;
+        public IEnumerable<EditVm> Users;
 
         public PaginationVm Pagination;
 
@@ -24,7 +24,7 @@ namespace UserManagement.WebUI.ViewModels.Users
             Users = models
                 .Skip(Pagination.Skip)
                 .Take(Pagination.Take)
-                .Select(model => new UserVm(model));
+                .Select(model => new EditVm(model));
         }
     }
 }

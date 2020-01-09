@@ -13,6 +13,7 @@
 <h1>Data management</h1>
 
 <p><a href="@Url.Action("CreateRandom", "Users")">Create</a> a randomly generated user.</p>
+<p><a href="@Url.Action("Create", "Users")">Create</a> a new user with information.</p>
 <p><a href="@Url.Action("Load", "Users")">Load</a> the list of users from the last time it was saved.</p>
 <p><a href="@Url.Action("Save", "Users")">Save</a> the list of users for later.</p>
 
@@ -35,7 +36,7 @@
 @foreach (var user in Model.Users)
 {
         <tr>
-            <td><a href="@Url.Action("Display", "Users", new { user.Id } )">@user.Name</a></td>
+            <td><a href="@Url.Action("Edit", "Users", new { user.Id } )">@user.Name</a></td>
             <td>@user.Age</td>
             <td>@user.Gender</td>
         </tr>
