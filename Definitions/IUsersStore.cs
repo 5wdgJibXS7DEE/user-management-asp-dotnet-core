@@ -19,7 +19,5 @@ namespace UserManagement.Definitions
         void Load();
 
         void Save();
-
-        void CreateRandom();
     }
 }

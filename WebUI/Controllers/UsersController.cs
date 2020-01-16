@@ -46,7 +46,7 @@ namespace UserManagement.WebUI.Controllers
             else
                 TempData["Error"] = "An error occured and the changes were NOT saved.";
 
-            return RedirectToAction(nameof(Edit), new { Id = input.Id });
+            return RedirectToAction(nameof(Edit), new { input.Id });
         }
 
         [HttpGet]
@@ -69,7 +69,9 @@ namespace UserManagement.WebUI.Controllers
 
         public IActionResult CreateRandom()
         {
-            _usersStore.CreateRandom();
+            User generated = Models.User.GenerateRandom();
+
+            _usersStore.Create(generated);
 
             TempData["Success"] = "A randomly generated user was created.";
 
