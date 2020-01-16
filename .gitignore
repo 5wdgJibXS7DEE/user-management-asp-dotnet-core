@@ -1,5 +1,16 @@
+# Build results
 bin
 obj
+
+# User-specific files
+*.user
+
+# Visual Studio and VSCode director
 .vs
 .vscode
+
+# Local database
 **/users.json
+
+# NCrunch files
+**/*ncrunchsolution.user
