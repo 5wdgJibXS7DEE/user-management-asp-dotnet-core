@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using UserManagement.Data;
+using UserManagement.Definitions;
 using UserManagement.Models;
 using UserManagement.WebUI.ViewModels.Users;
 
@@ -9,13 +9,16 @@ namespace UserManagement.WebUI.Controllers
 {
     public class UsersController : Controller
     {
-        public UsersController()
+        private readonly IUsersStore _usersStore;
+
+        public UsersController(IUsersStore usersStore)
         {
+            _usersStore = usersStore;
         }
 
         public IActionResult Index(string name, int? page)
         {
-            IEnumerable<User> users = UsersRepository.FindByName(name);
+            IEnumerable<User> users = _usersStore.FindByName(name);
 
             var vm = new UsersVm(users, name, page);
 
@@ -25,7 +28,7 @@ namespace UserManagement.WebUI.Controllers
         [HttpGet]
         public IActionResult Edit(Guid id)
         {
-            User user = UsersRepository.SingleByExternalId(id);
+            User user = _usersStore.SingleByExternalId(id);
 
             var vm = new EditVm(user);
 
@@ -37,8 +40,8 @@ namespace UserManagement.WebUI.Controllers
         {
             if (ModelState.IsValid == false)
                 return View(nameof(Edit), input);
-            
-            if (UsersRepository.TryUpdate(input.ToModel()))
+
+            if (_usersStore.TryUpdate(input.ToModel()))
                 TempData["Success"] = "The changes were saved.";
             else
                 TempData["Error"] = "An error occured and the changes were NOT saved.";
@@ -57,8 +60,8 @@ namespace UserManagement.WebUI.Controllers
         {
             if (ModelState.IsValid == false)
                 return View(nameof(Create), input);
-            
-            Guid createdId = UsersRepository.Create(input.ToModel());
+
+            Guid createdId = _usersStore.Create(input.ToModel());
             TempData["Success"] = "The user was created.";
 
             return RedirectToAction(nameof(Edit), new { Id = createdId });
@@ -66,7 +69,7 @@ namespace UserManagement.WebUI.Controllers
 
         public IActionResult CreateRandom()
         {
-            UsersRepository.CreateRandom();
+            _usersStore.CreateRandom();
 
             TempData["Success"] = "A randomly generated user was created.";
 
@@ -75,7 +78,7 @@ namespace UserManagement.WebUI.Controllers
 
         public IActionResult Load()
         {
-            UsersRepository.Load();
+            _usersStore.Load();
 
             TempData["Success"] = "Users were loaded.";
 
@@ -84,7 +87,7 @@ namespace UserManagement.WebUI.Controllers
 
         public IActionResult Save()
         {
-            UsersRepository.Save();
+            _usersStore.Save();
 
             TempData["Success"] = "Users were saved.";
 

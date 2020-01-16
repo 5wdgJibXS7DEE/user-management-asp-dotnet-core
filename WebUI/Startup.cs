@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using UserManagement.Data;
+using UserManagement.Definitions;
 
 namespace UserManagement.WebUI
 {
@@ -14,6 +16,7 @@ namespace UserManagement.WebUI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddSingleton<IUsersStore>(new UsersStore("users.json"));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

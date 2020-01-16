@@ -1,33 +1,39 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Text.Json;
-using UserManagement.Models;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
+using UserManagement.Definitions;
+using UserManagement.Models;
 
 namespace UserManagement.Data
 {
-    public class UsersRepository
+    public class UsersStore : IUsersStore
     {
-        private static List<User> Users = new List<User>();
+        private List<User> _users = new List<User>();
 
-        public static readonly string Filepath = "users.json";
+        private readonly string _filepath;
 
-        private static readonly object FileLocker = new object();
+        private readonly object _fileLocker = new object();
 
-        public static IEnumerable<User> All()
+        public UsersStore(string filepath)
         {
-            lock(Users)
-                return Users.ToArray();
+            _filepath = filepath;
         }
 
-        public static User SingleByExternalId(Guid externalId)
+        public IEnumerable<User> All()
+        {
+            lock (_users)
+                return _users.ToArray();
+        }
+
+        public User SingleByExternalId(Guid externalId)
         {
             return All()
                 .Single(m => m.ExternalId == externalId);
         }
 
-        public static IEnumerable<User> FindByName(string name)
+        public IEnumerable<User> FindByName(string name)
         {
             string nameFilter = name != null
                 ? name.Trim().ToLowerInvariant()
@@ -38,23 +44,23 @@ namespace UserManagement.Data
                 .ToArray();
         }
 
-        public static Guid Create(User created)
+        public Guid Create(User created)
         {
             created.InternalId = Guid.NewGuid();
             created.ExternalId = Guid.NewGuid();
-            
-            lock(Users)
-                Users.Add(created);
-            
+
+            lock (_users)
+                _users.Add(created);
+
             return created.ExternalId.Value;
         }
 
-        public static bool TryUpdate(User updated)
+        public bool TryUpdate(User updated)
         {
-            lock(Users)
+            lock (_users)
             {
-                IEnumerable<User> match = Users.Where(u => u.ExternalId == updated.ExternalId);
-                
+                IEnumerable<User> match = _users.Where(u => u.ExternalId == updated.ExternalId);
+
                 if (match.Count() != 1)
                     return false;
 
@@ -62,27 +68,27 @@ namespace UserManagement.Data
 
                 updated.InternalId = old.InternalId;
 
-                Users.Remove(old);
+                _users.Remove(old);
 
-                Users.Add(updated);
+                _users.Add(updated);
             }
-            
+
             return true;
         }
 
-        public static void Load()
+        public void Load()
         {
-            string json = ReadJsonFromFile(Filepath);
+            string json = ReadJsonFromFile(_filepath);
 
             var users = new List<User>(JsonSerializer.Deserialize<IEnumerable<User>>(json));
 
-            lock(Users)
-                Users = users;
+            lock (_users)
+                _users = users;
         }
 
-        private static string ReadJsonFromFile(string jsonPath)
+        private string ReadJsonFromFile(string jsonPath)
         {
-            lock(FileLocker)
+            lock (_fileLocker)
             {
                 using (FileStream fs = File.OpenRead(jsonPath))
                 using (TextReader reader = new StreamReader(fs))
@@ -92,22 +98,22 @@ namespace UserManagement.Data
             }
         }
 
-        public static void Save()
+        public void Save()
         {
             var options = new JsonSerializerOptions();
             options.WriteIndented = true;
 
             string serialized = "";
 
-            lock(Users)
-                serialized = JsonSerializer.Serialize(Users, options);
+            lock (_users)
+                serialized = JsonSerializer.Serialize(_users, options);
 
-            WriteInFile(serialized, Filepath);
+            WriteInFile(serialized, _filepath);
         }
 
-        private static void WriteInFile(string content, string filepath)
+        private void WriteInFile(string content, string filepath)
         {
-            lock(FileLocker)
+            lock (_fileLocker)
             {
                 using (FileStream fs = File.Create(filepath))
                 using (TextWriter writer = new StreamWriter(fs))
@@ -117,10 +123,10 @@ namespace UserManagement.Data
             }
         }
 
-        public static void CreateRandom()
+        public void CreateRandom()
         {
             Random random = new Random();
-            Gender gender = (Gender) random.Next(0, 2); // todo GSA max value of enum Gender must be computed at runtime
+            Gender gender = (Gender)random.Next(0, 2); // todo GSA max value of enum Gender must be computed at runtime
 
             User user = new User()
             {
@@ -131,8 +137,8 @@ namespace UserManagement.Data
                 Gender = gender
             };
 
-            lock(Users)
-                Users.Add(user);
+            lock (_users)
+                _users.Add(user);
         }
 
         private static string GenerateRandomName(Gender gender, Random random)
